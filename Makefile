@@ -28,19 +28,27 @@
 # Basic Configuration
 ################################################################################
 
+#Type of MTB Makefile Options include:
+#
+#COMBINED    -- Top Level Makefile usually for single standalone application
+#APPLICATION -- Top Level Common Makefile usually for multi-project in application
+#PROJECT     -- Project Makefile for each project under Application
+#
+MTB_TYPE=COMBINED
+
 # Target board/hardware (BSP).
 # To change the target, it is recommended to use the Library manager 
 # ('make modlibs' from command line), which will also update Eclipse IDE launch 
 # configurations. If TARGET is manually edited, ensure TARGET_<BSP>.mtb with a 
 # valid URL exists in the application, run 'make getlibs' to fetch BSP contents
 # and update or regenerate launch configurations for your IDE.
-TARGET=CY8CKIT-062S2-43012
+TARGET=APP_CY8CKIT-062S2-43012
 
 # Name of application (used to derive name of final linked file).
 # 
 # If APPNAME is edited, ensure to update or regenerate launch 
 # configurations for your IDE.
-APPNAME=mtb-example-psoc6-pdm-pcm
+APPNAME=cyberon-one-stage-kwd-demo-psoc6-cm4
 
 # Name of toolchain to use. Options include:
 #
