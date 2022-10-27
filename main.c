@@ -60,9 +60,14 @@ int main(void)
     }
 
     __enable_irq();
+
+    /* Reconfigure clocks for audio needs */
     clock_init();
+
+    /* Initialize retarget-io for serial output */
     cy_retarget_io_init(CYBSP_DEBUG_UART_TX, CYBSP_DEBUG_UART_RX, CY_RETARGET_IO_BAUDRATE);
 
+    /* Initialize PDM microphone */
     cyhal_pdm_pcm_init(&pdm_pcm, PDM_DATA, PDM_CLK, &audio_clock, &pdm_pcm_cfg);
     cyhal_pdm_pcm_register_callback(&pdm_pcm, pdm_pcm_isr_handler, NULL);
     cyhal_pdm_pcm_enable_event(&pdm_pcm, CYHAL_PDM_PCM_ASYNC_COMPLETE, CYHAL_ISR_PRIORITY_DEFAULT, true);
@@ -72,18 +77,21 @@ int main(void)
     printf("\x1b[2J\x1b[;H");
     printf("===== Cyberon Keyword Detection Engine Demo =====\r\n");
 
-
-
+    /* Get unique ID */
     uid = Cy_SysLib_GetUniqueId();
     printf("uniqueIdHi: 0x%08lX, uniqueIdLo: 0x%08lX\r\n", (uint32_t)(uid >> 32), (uint32_t)(uid << 32 >> 32));
 
+    /* Initialize Cyberon library */
     if(!cyberon_asr_init(asr_callback))
     {
-    	while(1);
+        while(1);
     }
+
+    printf("\r\nAwaiting voice input trigger command (\"Hello CyberVoice\"):\r\n");
 
     while(1)
     {
+        /* Process voice input */
         if(pdm_pcm_flag)
         {
             pdm_pcm_flag = 0;
@@ -116,13 +124,11 @@ void pdm_pcm_isr_handler(void *arg, cyhal_pdm_pcm_event_t event)
 
 void clock_init(void)
 {
-    cyhal_clock_get(&pll_clock, &CYHAL_CLOCK_PLL[0]);
-    cyhal_clock_init(&pll_clock);
+    cyhal_clock_reserve(&pll_clock, &CYHAL_CLOCK_PLL[0]);
     cyhal_clock_set_frequency(&pll_clock, AUDIO_SYS_CLOCK_HZ, NULL);
     cyhal_clock_set_enabled(&pll_clock, true, true);
 
-    cyhal_clock_get(&audio_clock, &CYHAL_CLOCK_HF[1]);
-    cyhal_clock_init(&audio_clock);
+    cyhal_clock_reserve(&audio_clock, &CYHAL_CLOCK_HF[1]);
 
     cyhal_clock_set_source(&audio_clock, &pll_clock);
     cyhal_clock_set_enabled(&audio_clock, true, true);
@@ -130,5 +136,5 @@ void clock_init(void)
 
 void asr_callback(const char *function, char *message, char *parameter)
 {
-	printf("[%s]%s(%s)\r\n", function, message, parameter);
+    printf("[%s]%s(%s)\r\n", function, message, parameter);
 }
