@@ -44,6 +44,9 @@ MTB_TYPE=COMBINED
 # and update or regenerate launch configurations for your IDE.
 TARGET=APP_CY8CKIT-062S2-43012
 
+# Rename TARGET to remove "APP_" prefix
+RENAMED_TARGET=$(subst APP_,,$(TARGET))
+
 # Name of application (used to derive name of final linked file).
 # 
 # If APPNAME is edited, ensure to update or regenerate launch 

@@ -113,6 +113,8 @@ Various CLI tools include a `-h` option that prints help information to the term
       make program TARGET=CY8CKIT-062S2-43012 TOOLCHAIN=GCC_ARM
       ```
 
+   ![serial-terminal](./images/serial-terminal.png)
+
 There are two types of recognition:
 
 | Types      | Trigger word       | Command                 |
